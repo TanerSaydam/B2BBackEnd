@@ -90,11 +90,15 @@ namespace Business.Repositories.ProductImageRepository
             return new SuccessResult(ProductImageMessages.Updated);
         }
 
-        [SecuredAspect()]
+        //[SecuredAspect()]
         [RemoveCacheAspect("IProductImageService.Get")]
 
         public async Task<IResult> Delete(ProductImage productImage)
         {
+            string path = @"./Content/img/" + productImage.ImageUrl;
+
+            _fileService.FileDeleteToServer(path);
+
             await _productImageDal.Delete(productImage);
             return new SuccessResult(ProductImageMessages.Deleted);
         }
@@ -105,6 +109,11 @@ namespace Business.Repositories.ProductImageRepository
         public async Task<IDataResult<List<ProductImage>>> GetList()
         {
             return new SuccessDataResult<List<ProductImage>>(await _productImageDal.GetAll());
+        }
+
+        public async Task<List<ProductImage>> GetListByProductId(int productId)
+        {
+            return await _productImageDal.GetAll(p => p.ProductId == productId);
         }
 
         [SecuredAspect()]

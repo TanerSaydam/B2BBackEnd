@@ -1,4 +1,6 @@
 using Business.Aspects.Secured;
+using Business.Repositories.PriceListDetailRepository;
+using Business.Repositories.ProductImageRepository;
 using Business.Repositories.ProductRepository.Constants;
 using Business.Repositories.ProductRepository.Validation;
 using Core.Aspects.Caching;
@@ -15,10 +17,14 @@ namespace Business.Repositories.ProductRepository
     public class ProductManager : IProductService
     {
         private readonly IProductDal _productDal;
+        private readonly IProductImageService _productImageService;
+        private readonly IPriceListDetailService _priceListDetailService;
 
-        public ProductManager(IProductDal productDal)
+        public ProductManager(IProductDal productDal, IProductImageService productImageService, IPriceListDetailService priceListDetailService)
         {
             _productDal = productDal;
+            _productImageService = productImageService;
+            _priceListDetailService = priceListDetailService;
         }
 
         //[SecuredAspect("admin,prdocut.add")]
@@ -41,11 +47,23 @@ namespace Business.Repositories.ProductRepository
             return new SuccessResult(ProductMessages.Updated);
         }
 
-        [SecuredAspect("admin,prdocut.delete")]
+        //[SecuredAspect("admin,prdocut.delete")]
         [RemoveCacheAspect("IProductService.Get")]
 
         public async Task<IResult> Delete(Product product)
         {
+            var images = await _productImageService.GetListByProductId(product.Id);
+            foreach (var image in images)
+            {
+                await _productImageService.Delete(image);
+            }
+
+            var priceListProducts = await _priceListDetailService.GetListByProductId(product.Id);
+            foreach (var item in priceListProducts)
+            {
+                await _priceListDetailService.Delete(item);
+            }
+
             await _productDal.Delete(product);
             return new SuccessResult(ProductMessages.Deleted);
         }
