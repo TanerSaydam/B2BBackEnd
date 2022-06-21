@@ -88,9 +88,9 @@ namespace Business.Repositories.ProductRepository
         //[SecuredAspect("admin,prdocut.get")]
         [CacheAspect()]
         [PerformanceAspect()]
-        public async Task<IDataResult<List<Product>>> GetList()
+        public async Task<IDataResult<List<ProductListDto>>> GetList()
         {
-            return new SuccessDataResult<List<Product>>(await _productDal.GetAll());
+            return new SuccessDataResult<List<ProductListDto>>(await _productDal.GetList());
         }
 
         //[SecuredAspect("admin,prdocut.get")]
