@@ -25,7 +25,7 @@ namespace Business.Repositories.ProductImageRepository
             _fileService = fileService;
         }
 
-        //[SecuredAspect()]
+        [SecuredAspect()]
         [ValidationAspect(typeof(ProductImageValidator))]
         [RemoveCacheAspect("IProductImageService.Get")]
 
@@ -40,7 +40,7 @@ namespace Business.Repositories.ProductImageRepository
 
                 if (result == null)
                 {
-                    string fileName = _fileService.FileSaveToServer(image, "./Content/img/");
+                    string fileName = _fileService.FileSaveToServer(image, "C:/B2BFrontend/src/assets/img/");
 
                     ProductImage productImage = new()
                     {
@@ -57,7 +57,7 @@ namespace Business.Repositories.ProductImageRepository
             return new SuccessResult(ProductImageMessages.Added);
         }
 
-        //[SecuredAspect()]
+        [SecuredAspect()]
         [ValidationAspect(typeof(ProductImageValidator))]
         [RemoveCacheAspect("IProductImageService.Get")]
 
@@ -72,6 +72,7 @@ namespace Business.Repositories.ProductImageRepository
             {
                 return result;
             }
+
             string path = @"./Content/img/" + productImageUpdateDto.ImageUrl;
 
             _fileService.FileDeleteToServer(path);
@@ -90,12 +91,12 @@ namespace Business.Repositories.ProductImageRepository
             return new SuccessResult(ProductImageMessages.Updated);
         }
 
-        //[SecuredAspect()]
+        [SecuredAspect()]
         [RemoveCacheAspect("IProductImageService.Get")]
 
         public async Task<IResult> Delete(ProductImage productImage)
         {
-            string path = @"./Content/img/" + productImage.ImageUrl;
+            string path = @"C:/B2BFrontend/src/assets/img/" + productImage.ImageUrl;
 
             _fileService.FileDeleteToServer(path);
 
@@ -103,7 +104,7 @@ namespace Business.Repositories.ProductImageRepository
             return new SuccessResult(ProductImageMessages.Deleted);
         }
 
-        //[SecuredAspect()]
+        [SecuredAspect()]
         [CacheAspect()]
         [PerformanceAspect()]
         public async Task<IDataResult<List<ProductImage>>> GetList()
@@ -111,9 +112,12 @@ namespace Business.Repositories.ProductImageRepository
             return new SuccessDataResult<List<ProductImage>>(await _productImageDal.GetAll());
         }
 
-        public async Task<List<ProductImage>> GetListByProductId(int productId)
+        [SecuredAspect()]
+        [CacheAspect()]
+        [PerformanceAspect()]
+        public async Task<IDataResult<List<ProductImage>>> GetListByProductId(int productId)
         {
-            return await _productImageDal.GetAll(p => p.ProductId == productId);
+            return new SuccessDataResult<List<ProductImage>>(await _productImageDal.GetAll(p => p.ProductId == productId));
         }
 
         [SecuredAspect()]
@@ -144,8 +148,9 @@ namespace Business.Repositories.ProductImageRepository
             return new SuccessResult();
         }
 
-        //[SecuredAspect()]        
-        //[TransactionAspect()]
+        [SecuredAspect()]
+        [RemoveCacheAspect("IProductImageService.Get")]
+        [RemoveCacheAspect("IProductService.Get")]
         public async Task<IResult> SetMainImage(int id)
         {
             var productImage = await _productImageDal.Get(p => p.Id == id);

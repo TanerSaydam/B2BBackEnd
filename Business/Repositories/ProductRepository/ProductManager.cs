@@ -70,7 +70,7 @@ namespace Business.Repositories.ProductRepository
             }
 
             var images = await _productImageService.GetListByProductId(product.Id);
-            foreach (var image in images)
+            foreach (var image in images.Data)
             {
                 await _productImageService.Delete(image);
             }
@@ -85,7 +85,7 @@ namespace Business.Repositories.ProductRepository
             return new SuccessResult(ProductMessages.Deleted);
         }
 
-        //[SecuredAspect("admin,prdocut.get")]
+        [SecuredAspect("admin,prdocut.get")]
         [CacheAspect()]
         [PerformanceAspect()]
         public async Task<IDataResult<List<ProductListDto>>> GetList()
@@ -93,8 +93,7 @@ namespace Business.Repositories.ProductRepository
             return new SuccessDataResult<List<ProductListDto>>(await _productDal.GetList());
         }
 
-        //[SecuredAspect("admin,prdocut.get")]
-        [CacheAspect()]
+        [SecuredAspect("admin,prdocut.get")]
         [PerformanceAspect()]
         public async Task<IDataResult<List<ProductListDto>>> GetProductList(int customerId)
         {

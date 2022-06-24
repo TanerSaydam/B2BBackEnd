@@ -9,6 +9,7 @@ namespace Business.Repositories.OrderRepository
         Task<IResult> Update(Order order);
         Task<IResult> Delete(Order order);
         Task<IDataResult<List<Order>>> GetList();
+        Task<IDataResult<List<Order>>> GetListByCustomerId(int customerId);
         Task<IDataResult<Order>> GetById(int id);
     }
 }

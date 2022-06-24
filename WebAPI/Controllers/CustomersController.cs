@@ -39,6 +39,17 @@ namespace WebApi.Controllers
         }
 
         [HttpPost("[action]")]
+        public async Task<IActionResult> ChangePasswordByAdminPanel(CustomerChangePassworByAdminPanelDto customerDto)
+        {
+            var result = await _customerService.ChangePasswordByAdminPanel(customerDto);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("[action]")]
         public async Task<IActionResult> Delete(Customer customer)
         {
             var result = await _customerService.Delete(customer);

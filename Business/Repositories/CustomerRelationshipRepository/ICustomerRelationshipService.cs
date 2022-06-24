@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Entities.Concrete;
 using Core.Utilities.Result.Abstract;
+using Entities.Concrete;
 
 namespace Business.Repositories.CustomerRelationshipRepository
 {
@@ -15,5 +10,6 @@ namespace Business.Repositories.CustomerRelationshipRepository
         Task<IResult> Delete(CustomerRelationship customerRelationship);
         Task<IDataResult<List<CustomerRelationship>>> GetList();
         Task<IDataResult<CustomerRelationship>> GetById(int id);
+        Task<IDataResult<CustomerRelationship>> GetByCustomerId(int customerId);
     }
 }

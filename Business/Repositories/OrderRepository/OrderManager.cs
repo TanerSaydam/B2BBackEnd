@@ -26,7 +26,7 @@ namespace Business.Repositories.OrderRepository
             _basketService = basketService;
         }
 
-        //[SecuredAspect()]
+        [SecuredAspect()]
         [ValidationAspect(typeof(OrderValidator))]
         [RemoveCacheAspect("IOrderService.Get")]
 
@@ -81,7 +81,7 @@ namespace Business.Repositories.OrderRepository
             return new SuccessResult(OrderMessages.Updated);
         }
 
-        //[SecuredAspect()]
+        [SecuredAspect()]
         [RemoveCacheAspect("IOrderService.Get")]
 
         public async Task<IResult> Delete(Order order)
@@ -102,6 +102,14 @@ namespace Business.Repositories.OrderRepository
         public async Task<IDataResult<List<Order>>> GetList()
         {
             return new SuccessDataResult<List<Order>>(await _orderDal.GetAll());
+        }
+
+        [SecuredAspect()]
+        [CacheAspect()]
+        [PerformanceAspect()]
+        public async Task<IDataResult<List<Order>>> GetListByCustomerId(int customerId)
+        {
+            return new SuccessDataResult<List<Order>>(await _orderDal.GetAll(p => p.CustomerId == customerId));
         }
 
         [SecuredAspect()]
