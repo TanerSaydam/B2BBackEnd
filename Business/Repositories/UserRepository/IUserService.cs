@@ -8,6 +8,7 @@ namespace Business.Repositories.UserRepository
     {
         Task Add(RegisterAuthDto authDto);
         Task<IResult> Update(User user);
+        Task<IResult> UpdateUserByAdminPanel(UserDto user);
         Task<IResult> ChangePassword(UserChangePasswordDto userChangePasswordDto);
         Task<IResult> Delete(User user);
         Task<IDataResult<List<User>>> GetList();

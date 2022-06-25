@@ -1,5 +1,6 @@
 using Core.Utilities.Result.Abstract;
 using Entities.Concrete;
+using Entities.Dtos;
 
 namespace Business.Repositories.OrderDetailRepository
 {
@@ -9,6 +10,7 @@ namespace Business.Repositories.OrderDetailRepository
         Task<IResult> Update(OrderDetail orderDetail);
         Task<IResult> Delete(OrderDetail orderDetail);
         Task<IDataResult<List<OrderDetail>>> GetList(int orderId);
+        Task<IDataResult<List<OrderDetailDto>>> GetListDto(int orderId);
         Task<List<OrderDetail>> GetListByProductId(int productId);
         Task<IDataResult<OrderDetail>> GetById(int id);
     }

@@ -10,6 +10,7 @@ using Core.Utilities.Result.Abstract;
 using Core.Utilities.Result.Concrete;
 using DataAccess.Repositories.OrderRepository;
 using Entities.Concrete;
+using Entities.Dtos;
 
 namespace Business.Repositories.OrderRepository
 {
@@ -67,7 +68,6 @@ namespace Business.Repositories.OrderRepository
                 };
                 await _basketService.Delete(basketEntity);
             }
-
             return new SuccessResult(OrderMessages.Added);
         }
 
@@ -107,6 +107,14 @@ namespace Business.Repositories.OrderRepository
         [SecuredAspect()]
         [CacheAspect()]
         [PerformanceAspect()]
+        public async Task<IDataResult<List<OrderDto>>> GetListDto()
+        {
+            return new SuccessDataResult<List<OrderDto>>(await _orderDal.GetListDto());
+        }
+
+        [SecuredAspect()]
+        [CacheAspect()]
+        [PerformanceAspect()]
         public async Task<IDataResult<List<Order>>> GetListByCustomerId(int customerId)
         {
             return new SuccessDataResult<List<Order>>(await _orderDal.GetAll(p => p.CustomerId == customerId));
@@ -116,6 +124,12 @@ namespace Business.Repositories.OrderRepository
         public async Task<IDataResult<Order>> GetById(int id)
         {
             return new SuccessDataResult<Order>(await _orderDal.Get(p => p.Id == id));
+        }
+
+        [SecuredAspect()]
+        public async Task<IDataResult<OrderDto>> GetByIdDto(int id)
+        {
+            return new SuccessDataResult<OrderDto>(await _orderDal.GetByIdDto(id));
         }
 
     }

@@ -69,13 +69,40 @@ namespace Business.Repositories.UserRepository
 
         [SecuredAspect()]
         [RemoveCacheAspect("IUserService.Get")]
+        public async Task<IResult> UpdateUserByAdminPanel(UserDto user)
+        {
+            var userEntity = await _userDal.Get(p => p.Id == user.Id);
+
+            var result = HashingHelper.VerifyPasswordHash(user.Password, userEntity.PasswordHash, userEntity.PasswordSalt);
+            if (result)
+            {
+                if (user.NewPassword != "")
+                {
+                    byte[] passwordHash, paswordSalt;
+                    HashingHelper.CreatePassword(user.NewPassword, out passwordHash, out paswordSalt);
+                    userEntity.PasswordHash = passwordHash;
+                    userEntity.PasswordSalt = paswordSalt;
+                }
+
+                userEntity.Name = user.Name;
+                await _userDal.Update(userEntity);
+                return new SuccessResult(UserMessages.UpdatedUser);
+            }
+            else
+            {
+                return new ErrorResult("Şifreniz mevcut şifreniz ile tutmuyor");
+            }
+        }
+
+        [SecuredAspect()]
+        [RemoveCacheAspect("IUserService.Get")]
         public async Task<IResult> Delete(User user)
         {
             await _userDal.Delete(user);
             return new SuccessResult(UserMessages.DeletedUser);
         }
 
-        //[SecuredAspect()]
+        [SecuredAspect()]
         [CacheAspect(60)]
         [PerformanceAspect(3)]
         public async Task<IDataResult<List<User>>> GetList()
@@ -83,6 +110,7 @@ namespace Business.Repositories.UserRepository
             return new SuccessDataResult<List<User>>(await _userDal.GetAll());
         }
 
+        [SecuredAspect()]
         public async Task<IDataResult<User>> GetById(int id)
         {
             return new SuccessDataResult<User>(await _userDal.Get(p => p.Id == id));
