@@ -29,6 +29,27 @@ namespace DataAccess.Repositories.OrderRepository
             }
         }
 
+        public async Task<List<OrderDto>> GetListByCustomerIdDto(int customerId)
+        {
+            using (var context = new SimpleContextDb())
+            {
+                var result = from order in context.Orders.Where(p => p.CustomerId == customerId)
+                             join customer in context.Customers on order.CustomerId equals customer.Id
+                             select new OrderDto
+                             {
+                                 Id = order.Id,
+                                 CustomerId = order.CustomerId,
+                                 CustomerName = customer.Name,
+                                 Date = order.Date,
+                                 OrderNumber = order.OrderNumber,
+                                 Status = order.Status,
+                                 Quantity = context.OrderDetails.Where(p => p.OrderId == order.Id).Sum(s => s.Quantity),
+                                 Total = context.OrderDetails.Where(p => p.OrderId == order.Id).Sum(s => s.Price) * context.OrderDetails.Where(p => p.OrderId == order.Id).Sum(s => s.Quantity)
+                             };
+                return await result.OrderByDescending(p => p.Id).ToListAsync();
+            }
+        }
+
         public async Task<OrderDto> GetByIdDto(int id)
         {
             using (var context = new SimpleContextDb())
@@ -54,7 +75,7 @@ namespace DataAccess.Repositories.OrderRepository
         {
             using (var context = new SimpleContextDb())
             {
-                var findLastOrder = context.Orders.OrderByDescending(p => p.Id).LastOrDefault();
+                var findLastOrder = context.Orders.OrderBy(p => p.Id).LastOrDefault();
 
                 if (findLastOrder == null)
                 {

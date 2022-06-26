@@ -28,8 +28,8 @@ namespace Business.Repositories.UserRepository
         [RemoveCacheAspect("IUserService.Get")]
         public async Task Add(RegisterAuthDto registerDto)
         {
-            string fileName = _fileService.FileSaveToServer(registerDto.Image, "./Content/Img/");
-            //string fileName = _fileService.FileSaveToFtp(registerDto.Image);
+            //string fileName = _fileService.FileSaveToServer(registerDto.Image, "./Content/Img/");
+            string fileName = _fileService.FileSaveToFtp(registerDto.Image);
             //byte[] fileByteArray = _fileService.FileConvertByteArrayToDatabase(registerDto.Image);
 
             var user = CreateUser(registerDto, fileName);

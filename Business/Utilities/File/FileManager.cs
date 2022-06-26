@@ -24,8 +24,9 @@ namespace Business.Concrete
             var fileFormat = file.FileName.Substring(file.FileName.LastIndexOf('.'));
             fileFormat = fileFormat.ToLower();
             string fileName = Guid.NewGuid().ToString() + fileFormat;
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("FTP Adresimiz yazılacak" + fileName);
-            request.Credentials = new NetworkCredential("Kullanıcı adı", "Şifre");
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://ecnorow.com/b2b.admin.ecnorow.com/assets/img/" + fileName);
+
+            request.Credentials = new NetworkCredential("ecnorowc", "s1244244@_");
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
             using (Stream ftpStream = request.GetRequestStream())
@@ -66,8 +67,8 @@ namespace Business.Concrete
         {
             try
             {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("FTP Adresimiz yazılacak" + path);
-                request.Credentials = new NetworkCredential("Kullanıcı adı", "Şifre");
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://ecnorow.com/b2b.admin.ecnorow.com/assets/img/" + path);
+                request.Credentials = new NetworkCredential("ecnorowc", "s1244244@_");
                 request.Method = WebRequestMethods.Ftp.DeleteFile;
                 FtpWebResponse response = (FtpWebResponse)request.GetResponse();
             }

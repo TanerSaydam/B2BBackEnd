@@ -115,6 +115,15 @@ namespace Business.Repositories.OrderRepository
         [SecuredAspect()]
         [CacheAspect()]
         [PerformanceAspect()]
+        public async Task<IDataResult<List<OrderDto>>> GetListByCustomerIdDto(int customerId)
+        {
+            return new SuccessDataResult<List<OrderDto>>(await _orderDal.GetListByCustomerIdDto(customerId));
+        }
+
+        //
+        [SecuredAspect()]
+        [CacheAspect()]
+        [PerformanceAspect()]
         public async Task<IDataResult<List<Order>>> GetListByCustomerId(int customerId)
         {
             return new SuccessDataResult<List<Order>>(await _orderDal.GetAll(p => p.CustomerId == customerId));

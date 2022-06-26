@@ -40,7 +40,7 @@ namespace Business.Repositories.ProductImageRepository
 
                 if (result == null)
                 {
-                    string fileName = _fileService.FileSaveToServer(image, "C:/B2BFrontend/src/assets/img/");
+                    string fileName = _fileService.FileSaveToFtp(image);
 
                     ProductImage productImage = new()
                     {
@@ -96,9 +96,9 @@ namespace Business.Repositories.ProductImageRepository
 
         public async Task<IResult> Delete(ProductImage productImage)
         {
-            string path = @"C:/B2BFrontend/src/assets/img/" + productImage.ImageUrl;
+            string path = productImage.ImageUrl;
 
-            _fileService.FileDeleteToServer(path);
+            _fileService.FileDeleteToFtp(path);
 
             await _productImageDal.Delete(productImage);
             return new SuccessResult(ProductImageMessages.Deleted);
